@@ -1,5 +1,7 @@
-﻿using DapperASPNetCore.Context;
+﻿using Dapper;
+using DapperASPNetCore.Context;
 using DapperASPNetCore.Contracts;
+using DapperASPNetCore.Entities;
 
 namespace DapperASPNetCore.Repository
 {
@@ -10,6 +12,17 @@ namespace DapperASPNetCore.Repository
         public CompanyRepository(DapperContext context)
         {
             _context = context;
+        }
+
+        public async Task<IEnumerable<Company>> GetCompanies()
+        {
+            var query = "SELECT * FROM companies";
+            using (var connection = _context.CreateConnection())
+            {
+                var companies = await connection.QueryAsync<Company>(query);
+
+                return companies.ToList();
+            }
         }
     }
 }
